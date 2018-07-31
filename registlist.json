@@ -1,0 +1,17 @@
+[
+	{
+	  "username":"zhangsan",
+      "pwd":"123456",
+	  "tel":"110"
+    },
+	{
+	  "username":"lisi",
+      "pwd":"123456",
+	  "tel":"110"
+    },
+	{
+	  "username":"wangwu",
+      "pwd":"123456",
+	  "tel":"110"
+    }
+]
