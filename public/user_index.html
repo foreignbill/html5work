@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+	<link rel="stylesheet" type="text/css" href="css/Main.css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript">
+		var obj = $.cookie('user_who_login');
+		console.log(obj);
+		if(obj == 'null' || obj == undefined) window.location.href="login.html";
+		$(document).ready(function(){
+			if(obj == 'null' || obj == undefined) {
+
+			} else $("#user_name").append(obj);
+		});
+		function logout() {
+			$.cookie('user_who_login',null);
+			window.location.href="index.html";
+		}
+	</script>
+</head>
+
+<body>
+	<div data-role="page" id="Index">
+		<div data-role="header" style="text-align: center;line-height:3em;">
+			<h>我的</h>
+		</div>
+		<div data-role="content">
+			<div class="user_index-header">
+		        <img src="img/photo/root.jpg" class="head-icon">
+		        <div id="user_name"></div>
+		    </div>
+
+	        <div class="user_index-container">
+                <div class="user_index-orders">
+                    <div class="title">我的订单</div>
+                    <div class="title-line"></div>
+                    <div class="order-item-container">
+	                    <div class="order-item" onclick="window.location.href='user_order.html'">
+	                    	<p style="text-align: left;">订单</p>
+	                    </div>
+	                    <div class="order-item" onclick="window.location.href='user_want_to_see.html'">
+	                    	<p style="text-align: left;">想看</p>
+	                    </div>
+               		</div>
+                </div>
+	        </div>
+	        <div style="height: 10vh;"></div>
+	        <input type="submit" value="退出" onclick="logout();">
+	    </div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+                	<li class="footer-list"><a onclick="window.location.href='index.html'" data-icon="home" data-iconpos="left">正在热映</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='incoming.html'" data-icon="star">即将播放</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='cinema.html'" data-icon="search">影院</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='user_index.html'" data-icon="gear" class="ui-btn-active">我的</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

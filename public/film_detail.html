@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+	<link rel="stylesheet" type="text/css" href="css/Main.css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(e) {
+			var obj = $.cookie('now_film');
+			$.ajax({
+				url:"http://127.0.0.1:8081/searchfilm?film_name="+obj,
+				type:"POST",
+	       		dataType:"JSON",
+	       		success: function(data) {
+	       			$("#Index").children("div:eq(0)").children("h").text(data[0].f_title);
+	       			$("#film-detail").append(
+	       				"<div class='film-detail-Poster' style='float: left;''>"
+							+"<img src="+data[0].file_poster+">"
+						+"</div>"
+						+"<div class='film-detail-Info'>"
+							+"<h3>"+data[0].f_title+"<img class='span-after-title' src='img/2dimax.png'></h3>"
+							+"<span class='film-detail-SimpleText'>观众评分:9.1</span>"
+							+"<span class='film-detail-SimpleText'>"+finddirector(data[0].f_title)+"</span>"
+							+"<span class='film-detail-SimpleText'>"+findactor(data[0].f_title)+"</span>"
+							+"<span class='film-detail-SimpleText'>中国大陆-118分钟</span>"
+						+"</div>"
+	       			);
+	       		},
+	       		error:function(error) {
+	       			console.log("Fuck you");
+	       		}
+			});
+
+			function finddirector(name) {
+				var ret;
+				$.ajax({
+					url:"http://127.0.0.1:8081/searchdirectors?film_name="+name,
+					type:"POST",
+		       		dataType:"JSON",
+		       		success: function(data) {
+		       			ret = "导演:";
+		       			for(var i=0;i<data.length;i++){
+		       				if(i>0)
+		       					ret += "/"+data[i].director_name;
+		       				else ret += data[i].director_name;;
+		       			}
+		       			$(".film-detail-Info").children("span:eq(1)").text(ret);
+		       		},
+		       		error:function(error) {
+		       			console.log("Fuck you");
+		       		}
+				});
+			}
+
+			function findactor(name) {
+				var ret;
+				$.ajax({
+					url:"http://127.0.0.1:8081/searchactors?film_name="+name,
+					type:"POST",
+		       		dataType:"JSON",
+		       		success: function(data) {
+		       			ret = "主演:";
+		       			for(var i=0;i<data.length;i++){
+		       				if(i>0)
+		       					ret += "/"+data[i].actor_name;
+		       				else ret += data[i].actor_name;;
+		       			}
+		       			$(".film-detail-Info").children("span:eq(2)").text(ret);
+		       		},
+		       		error:function(error) {
+		       			console.log("Fuck you");
+		       		}
+				});
+			}
+
+			function addDate(date,days){ 
+		       var d=new Date(date); 
+		       d.setDate(d.getDate()+days); 
+		       var m=d.getMonth()+1; 
+		       if(m<10) m="0"+m;
+		       var day = d.getDate();
+		       if(day<10) day="0"+day;
+		       return d.getFullYear()+'-'+m+'-'+day; 
+		    }
+
+			var daynow = '2018-08-01';
+			for(var i=0;i<7;i++) {
+				var d=new Date(daynow);
+				var m=d.getMonth()+1;
+				var day=d.getDate();
+				$("#timeline").append(
+					"<li data-day='"+daynow+"' class='showDay'>"
+						+m+"月"+day+"日"
+					+"</li>"
+				);
+				daynow = addDate(daynow,1);
+			}
+
+			daynow = '2018-08-01';
+			update(daynow);
+			function update(daynow) {
+				var film_name=$.cookie('now_film');
+				$.ajax({ 
+			        url:"http://127.0.0.1:8081/searchfilm_and_cinema?film_name="+film_name+"&film_date="+daynow, 
+			        type:"POST",
+			        dataType:"JSON",  // 处理Ajax跨域问题
+			        success: function(data) { 
+			        	for(var i=0;i<data.length;i++) {
+			        		$("#cinema-list").append(
+								"<div class='cinema-list-item'>"
+									+"<div class='cinema-list-item-container'>"
+										+"<div class='cinema-list-item-title'>"
+											+"<span>"+data[i].c_name+"</span>"
+										+"</div>"
+										+"<div class='cinema-list-item-location'>"+data[i].c_loc+"</div>"
+										+"<div class='flex'></div>"
+										+"<div class='label-block'>"
+											+"<div class='snack'>小吃</div>"
+											+"<div class='hallType'>杜比全景声厅</div>"
+											+"<div class='hallType'>4D厅</div>"
+											+"<div class='hallType'>巨幕厅</div>"
+										+"</div>"
+									+"</div>"
+								+"</div>"
+			        		);
+			        	}
+
+			        	$(".cinema-list-item-container").each(function(){
+					    	$(this).click(function(){
+					    		$.cookie('now_cinema',$(this).children("div:eq(0)").text(),{expires:7});
+					    		$.cookie('now_loc',$(this).children("div:eq(1)").text(),{expires:7});
+					    		window.location.href="cinema_detail.html";
+					    	});
+					    });
+			        },
+			        error: function(error) {
+			        	console.log("fuck you");
+			        }
+			    });
+			}
+
+			$("#timeline").children("li:eq(0)").attr('class','showDay chosen');
+			$(".showDay").each(function(){
+				$(this).click(function(){
+					$(".showDay.chosen").attr('class','showDay');
+					$(this).attr('class','showDay chosen');
+					$("#cinema-list").empty();
+					update($(this).attr('data-day'));
+				});
+			});
+		});
+	</script>
+</head>
+
+<body>
+	<div data-role="page" id="Index">
+		<div data-role="header" style="text-align: center;line-height:3em;">
+			<button class="ui-film-btn ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back" onclick="javascript:history.back(-1);">back</button>
+			<h></h>
+		</div>
+		<div data-role="content">
+
+			<div id="film-detail" class="film-detail-Container" data-f_title="西红柿首富">
+			</div>
+
+			<div id="showDays">
+			    <ul id="timeline" class="mb-line-b">
+			    </ul>
+			</div>
+
+			<div class="film-line"></div>
+
+			<div id="cinema">
+				<div id="cinema-list">
+				</div>
+			</div>
+	    </div>
+		<div data-role="footer" data-position="fixed">
+		</div>
+	</div>
+</body>
+</html>

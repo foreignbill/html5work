@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+	<link rel="stylesheet" type="text/css" href="css/Main.css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			$.ajax({ 
+		        url:"http://127.0.0.1:8081/incoming.html", 
+		        type:"POST",
+		        dataType:"JSON",  // 处理Ajax跨域问题
+		        success: function(data) { 
+		        	var last_date = "2018-08-02T16:00:00.000Z";
+		            for(var i=0;i<data.length;i++) {
+		            	if(data[i].f_date > '2018-08-02T16:00:00.000Z') {
+		            		if(data[i].f_date != last_date) {
+		            			var dateArray = data[i].f_date.split('-');
+			            		var dateArray2 = dateArray[2].split('T');
+			            		var month = dateArray[1];
+			            		if(month[0]=='0') month = month[1]+"";
+			            		var day = dateArray2[0];
+			            		if(day[0]=='0') day = day[1]+"";
+			            		$("#IncomingList").append("<div class='IncomingList-Date'>"+month+"月"+day+"日"+"</div>");
+		            		}
+		            		
+			            	$("#IncomingList").append(
+			            		"<div id='Incoming"+i+"'class='IncomingList-Container' data-f_title='"+data[i].f_title+"'>"
+			            			+"<div class='IncomingList-Poster' style='float: left;'>"
+										+"<img src='"+data[i].file_poster+"'>"
+									+"</div>"
+									+"<div class='IncomingList-Info''>"
+										+"<h3>"+data[i].f_title+"<img class='span-after-title' src='img/2dimax.png'>"+"</h3>"
+										+"<span class='IncomingList-SimpleText'>观众评分:9.1</span>"
+		                        		+"<span class='IncomingList-SimpleText'>"+finddirector(data[i].f_title,i)+"</span>"
+		                        		+"<span class='IncomingList-SimpleText'>"+findactor(data[i].f_title,i)+"</span>"
+		                        		+"<span class='IncomingList-SimpleText'>简介:"+data[i].f_brief+"</span>"
+		                    		+"</div>"
+									+"<div class='button-block'>"
+		                        		+"<div class='btn' style='background-color: #3c9fe6;'><span class='span-fix'>预售</span></div>"
+	      							+"</div>"
+			            		+"</div>"
+			            	);
+			            }
+		            }
+
+		            $(".button-block").each(function(index,element) {
+						$(this).click(function(){
+							var obj = $(this).parent()[0];
+							$.cookie('now_film',$(obj).attr('data-f_title'),{expires:7});
+							window.location.href="film_detail.html";
+						});
+					});
+
+		        },
+		        error: function(error) {
+		        	console.log("fuck you");
+		        }
+		    });
+
+			function finddirector(name,id) {
+				var ret;
+				$.ajax({
+					url:"http://127.0.0.1:8081/incoming.html/searchdirectors?film_name="+name,
+					type:"POST",
+		       		dataType:"JSON",
+		       		success: function(data) {
+		       			ret = "导演:";
+		       			for(var i=0;i<data.length;i++){
+		       				if(i>0)
+		       					ret += "/"+data[i].director_name;
+		       				else ret += data[i].director_name;;
+		       			}
+		       			$("#Incoming"+id).children("div:eq(1)").children("span:eq(1)").text(ret);
+		       		},
+		       		error:function(error) {
+		       			console.log("Fuck you");
+		       		}
+				});
+			}
+
+		    function findactor(name,id) {
+				var ret;
+				$.ajax({
+					url:"http://127.0.0.1:8081/incoming.html/searchactors?film_name="+name,
+					type:"POST",
+		       		dataType:"JSON",
+		       		success: function(data) {
+		       			ret = "主演:";
+		       			for(var i=0;i<data.length;i++){
+		       				if(i>0)
+		       					ret += "/"+data[i].actor_name;
+		       				else ret += data[i].actor_name;;
+		       			}
+		       			$("#Incoming"+id).children("div:eq(1)").children("span:eq(2)").text(ret);
+		       		},
+		       		error:function(error) {
+		       			console.log("Fuck you");
+		       		}
+				});
+			}
+
+		});
+	</script>
+</head>
+
+<body>
+	<div data-role="page" id="Index">
+		<div data-role="header" style="text-align: center;line-height:3em;">
+			<h>电影市场</h>
+		</div>
+		<div data-role="content">
+			<div id="Recommand">
+				<h4>近期最受期待电影</h4>
+				<div id="RecommandList">
+					<div class="RecommandList-Poster" style="float: left;">
+						<img src="img/Recommand1.jpg">
+					</div>
+					<div class="RecommandList-Poster" style="float: left;">
+						<img src="img/Recommand2.jpg">
+					</div>
+				</div>
+			</div>
+			<div id="Incoming">
+				<h4></h4>
+				<div id="IncomingList">
+				</div>
+			</div>
+			
+		</div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+                	<li class="footer-list"><a onclick="window.location.href='index.html'" data-icon="home" data-iconpos="left">正在热映</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='incoming.html'" data-icon="star" class="ui-btn-active">即将播放</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='cinema.html'" data-icon="search">影院</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='user_index.html'" data-icon="gear">我的</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

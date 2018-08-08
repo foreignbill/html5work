@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+	<link rel="stylesheet" type="text/css" href="css/Main.css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(e) {
+			$("#user_name").keyup(function() {
+				$.ajax({ 
+			        url:"http://127.0.0.1:8081/searchusername?user_name="+$(this).val(),
+			        type:"POST",
+			        dataType:"JSON",  // 处理Ajax跨域问题
+			        success: function(data) { 
+			        	console.log(data);
+			        	if(data.length != 0){
+							$("#user_name").attr('style','background-color: #ff5b5b4d');
+							$("#user_name").attr('isok','false');
+							flg1 = 0;
+			        	}
+						else {
+							$("#user_name").attr('style','background-color: white');
+							$("#user_name").attr('isok','true');
+							flg1 = 1;
+						}
+			        },
+			        error: function(error) {
+			        	console.log("fuck");
+			        }
+			    });
+			});
+			$("#user_pwd1").keyup(function() {
+				if($(this).val().length < 6){
+					$(this).attr('style','background-color: #ff5b5b4d');
+					flg2 = 0;
+				}
+				else {
+					$(this).attr('style','background-color: white');
+					flg2 = 1;
+				}
+			});
+			$("#user_pwd2").keyup(function() {
+				if($(this).val() != $("#user_pwd1").val()){
+					$(this).attr('style','background-color: #ff5b5b4d');
+					flg3 = 0;
+				}
+				else {
+					$(this).attr('style','background-color: white');
+					flg3 = 1;
+				}
+			});
+		});
+
+		function regist() {
+			var user_id = $("#user_name").val();
+			var nick_name = $("#nick_name").val();
+			if(nick_name == "") nick_name = user_id;
+			var pwd1 = $("#user_pwd1").val();
+			var pwd2 = $("#user_pwd2").val();
+			if($("#user_name").attr('isok') == 'true' && $("#user_name").val().length != 0 && pwd1 == pwd2 && pwd1 != "") {
+				$.ajax({ 
+			        url:"http://127.0.0.1:8081/create_user?user_name="+user_id+"&nick_name="+nick_name+"&pwd="+pwd1,
+			        type:"POST",
+			        dataType:"JSON",  // 处理Ajax跨域问题
+			        success: function(data) {
+			        	$("#Index").children("div:eq(1)").append("<div id='alarmfive'>注册成功</div>");
+						setTimeout(function(){
+							$("#alarmfive").remove();
+							window.location.href="login.html";
+						},1200);
+			        },
+			        error: function(error) {
+			        	console.log("fuck");
+			        }
+			    });
+			}
+		}
+
+	</script>
+</head>
+
+<body>
+	<div data-role="page" id="Index">
+		<div data-role="header" style="text-align: center;line-height:3em;">
+			<h>®️注册</h>
+		</div>
+		<div data-role="content">
+			<input id="user_name" type="text" name="user_name" isok='true' placeholder="账户/邮箱">
+			<input id="nick_name" type="text" name="nick_name" placeholder="昵称">
+			<input id="user_pwd1" type="password" name="user_pwd" placeholder="请输入密码">
+			<input id="user_pwd2" type="password" name="user_pwd" placeholder="再次输入密码">
+			<input type="submit" value="提交" onclick="regist();">
+		</div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+                	<li class="footer-list"><a onclick="window.location.href='index.html'" data-icon="home" data-iconpos="left">正在热映</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='incoming.html'" data-icon="star">即将播放</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='cinema.html'" data-icon="search">影院</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='user_index.html'" data-icon="gear">我的</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

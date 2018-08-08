@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+	<link rel="stylesheet" type="text/css" href="css/Main.css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(e) {
+			var obj = $.cookie('film_like');
+			$.ajax({
+				url:"http://127.0.0.1:8081/searchfilm?film_name="+obj,
+				type:"POST",
+	       		dataType:"JSON",
+	       		success: function(data) {
+	       			$("#Index").children("div:eq(0)").children("h").text(data[0].f_title);
+	       			$("#film-detail").append(
+	       				"<div class='film-detail-Poster' style='float: left;''>"
+							+"<img src="+data[0].file_poster+">"
+						+"</div>"
+						+"<div class='film-detail-Info'>"
+							+"<h3>"+data[0].f_title+"<img class='span-after-title' src='img/2dimax.png'></h3>"
+							+"<span class='film-detail-SimpleText'>观众评分:9.1</span>"
+							+"<span class='film-detail-SimpleText'>"+finddirector(data[0].f_title)+"</span>"
+							+"<span class='film-detail-SimpleText'>"+findactor(data[0].f_title)+"</span>"
+							+"<span class='film-detail-SimpleText'>中国大陆-118分钟</span>"
+						+"</div>"
+	       			);
+	       			$("#film_brief").text(data[0].f_brief);
+	       		},
+	       		error:function(error) {
+	       			console.log("Fuck you");
+	       		}
+			});
+
+			function finddirector(name) {
+				var ret;
+				$.ajax({
+					url:"http://127.0.0.1:8081/searchdirectors?film_name="+name,
+					type:"POST",
+		       		dataType:"JSON",
+		       		success: function(data) {
+		       			ret = "导演:";
+		       			for(var i=0;i<data.length;i++){
+		       				if(i>0)
+		       					ret += "/"+data[i].director_name;
+		       				else ret += data[i].director_name;;
+		       			}
+		       			$(".film-detail-Info").children("span:eq(1)").text(ret);
+		       		},
+		       		error:function(error) {
+		       			console.log("Fuck you");
+		       		}
+				});
+			}
+
+			function findactor(name) {
+				var ret;
+				$.ajax({
+					url:"http://127.0.0.1:8081/searchactors?film_name="+name,
+					type:"POST",
+		       		dataType:"JSON",
+		       		success: function(data) {
+		       			ret = "主演:";
+		       			for(var i=0;i<data.length;i++){
+		       				if(i>0)
+		       					ret += "/"+data[i].actor_name;
+		       				else ret += data[i].actor_name;;
+		       			}
+		       			$(".film-detail-Info").children("span:eq(2)").text(ret);
+		       		},
+		       		error:function(error) {
+		       			console.log("Fuck you");
+		       		}
+				});
+			}
+
+			var f_title = $.cookie('film_like');
+			$.ajax({
+				url:"http://127.0.0.1:8081/searchactors_detail?film_name="+f_title,
+				type:"POST",
+				dataType:"JSON",
+				success: function(data) {
+					console.log(data);
+					for(var i=data.length-1;i>=0;i--) {
+						$(".film-like-section-list").append(
+							"<li class='film-like-li'>"
+								+"<a href='#'' style='text-decoration: none;'>"
+									+"<img class='film-like-actors' src='"+data[i].actor_photo+"'>"
+									+"<span class='film-like-actorname actors'>"+data[i].actor_name+"</span>"
+									+"<span class='film-like-actorname roles'>"+data[i].role_name+"</span>"
+								+"</a>"
+							+"</li>"
+						);
+					}
+				},
+				error: function(error) {
+					console.log("fuck you");
+				}
+			});
+
+			$("#point-board").children().each(function(){
+				$(this).hover(function(){
+					console.log(this);
+				})
+			})
+
+		});
+		function upload() {
+			var u_id = $.cookie('user_who_login');
+			if(u_id == 'null' || u_id == undefined) {
+				$("#Index").children("div:eq(1)").append("<div id='alarmfive'>请先登录</div>");
+				setTimeout(function(){
+					$("#alarmfive").remove();
+				},1200);
+				window.location.href = "login.html";
+			}
+			
+		}
+	</script>
+</head>
+
+<body>
+	<div data-role="page" id="Index">
+		<div data-role="header" style="text-align: center;line-height:3em;">
+			<button class="ui-film-btn ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back" onclick="javascript:history.back(-1);">back</button>
+			<h></h>
+		</div>
+		<div data-role="content">
+
+			<div id="film-detail" class="film-detail-Container" data-f_title="西红柿首富">
+			</div>
+
+			<p id="film_brief"></p>
+
+			<div class="film-line"></div>
+
+			<section class="film-like-section">
+				<ul class="film-like-section-list">
+				</ul>
+			</section>
+
+			<section class="film-comment">
+				<h3>
+					<span>短评</span>
+				</h3>
+				<ul class="comment-list">
+					<li class="comment-list-item">
+						<div>
+							<header class="comment-header">
+								<div class="rating" data-reactid=".yaor8zoc2u.4.9.1.2:$0.0.0.0">
+									<img class="noneBg" src="img/star-full.png">
+									<img class="noneBg" src="img/star-full.png">
+									<img class="noneBg" src="img/star-full.png">
+									<img class="noneBg" src="img/star-full.png">
+									<img class="noneBg" src="img/star-full.png">
+								</div>
+								<time class="timeago">07-27</time>
+							</header>
+							<section class="comment-body">
+								<p class="content">看完了，分手了</p>
+							</section>
+
+							<footer>
+								<img class="avatar-img" src="https://img.meituan.net/avatar/f62adaade0cf9f7dcb426affd53ac49f7527.jpg" data-reactid=".1rizx0nuoi8.4.9.1.2:$0.0.4.0">
+								<em class="com-nick" data-reactid=".1rizx0nuoi8.4.9.1.2:$0.0.4.1">Wxi900927964</em>
+							</footer>
+
+						</div>
+					</li>
+				</ul>
+
+				<div>
+					<h3>点评</h3>
+					<div id="point-board" class="rating" data-reactid=".yaor8zoc2u.4.9.1.2:$0.0.0.0">
+						<img class="noneBg" bid="1" src="img/star-full.png">
+						<img class="noneBg" bid="2" src="img/star-full.png">
+						<img class="noneBg" bid="3" src="img/star-full.png">
+						<img class="noneBg" bid="4" src="img/star-full.png">
+						<img class="noneBg" bid="5" src="img/star-full.png">
+					</div>
+					<input type="text" name="" placeholder='点评。。。'>
+					<input type="submit" name="" value="提交" onclick="upload();">
+				</div>
+			</section>
+	    </div>
+		<div data-role="footer" data-position="fixed">
+		</div>
+	</div>
+</body>
+</html>

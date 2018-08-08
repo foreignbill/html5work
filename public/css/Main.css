@@ -1,0 +1,719 @@
+#Broadcast{
+	top: 11.5%;
+	width: 95%;
+	margin: 0px auto;
+}
+#BroadcastList{
+	width: 100%;
+	margin: 0px auto;
+}
+#Recommand{
+
+}
+#PopularList{
+
+}
+img{
+	width: 100%;
+}
+ul{
+	margin: 0px;
+	padding: 0px;
+}
+#BroadcastList > li{
+	list-style: none;
+	display: none;
+}
+#PopularList > li{
+	list-style: none;
+	width: 50%;
+}
+#BroadcastList > .current{
+	display: block;
+}
+#PopularList{
+	width: 100%;
+}
+.PopularList-Container{
+	position: relative;
+	width: 100%;
+	height: 114px;
+	border-bottom: 1px solid #cecececc;
+}
+.PopularList-Poster{
+	width: 64px;
+	height: 90px;
+	position: relative;
+	margin-top: 12px;
+	float: left;
+}
+.PopularList-Info{
+    padding: 12px 14px 12px 0;
+    margin-left: 74px;
+    height: 70px;
+    max-height: 70px;
+    position: relative;
+}
+.PopularList-SimpleText{
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	font-size: 12px;
+}
+.RecommandList-Poster{
+	width: 50%;
+	height: 70vw;
+}
+.RecommandList-Poster > img {
+	width: 45vw;
+	height: 70vw;
+}
+span {
+	display: block;
+}
+*{
+	margin: 0px;
+}
+.button-block {
+	font-size: 12px;
+	position: absolute;
+	right: 14px;
+	top: 0px;
+	bottom: 0px;
+	height: 27px;
+	margin: auto;
+}
+.btn {
+	width: 47px;
+	height: 27px;
+	line-height: 28px;
+	text-align: center;
+	box-sizing: border-box;
+	background-color: #f03d37;
+	color: #fff;
+	border-radius: 4px;
+	white-space: nowrap;
+	font-size: 12px;
+	cursor: pointer;
+}
+.span-fix {
+	line-height: 28px;
+	text-align: center;
+	color: #fff;
+	white-space: nowrap;
+	font-size: 12px;
+	cursor: pointer;
+}
+.ui-overlay-a, .ui-page-theme-a, .ui-page-theme-a .ui-panel-wrapper {
+    text-shadow: none;
+}
+.ui-header {
+	display: block;
+	-webkit-box-flex: 1;
+	-ms-flex: 1;
+	font-size: 18px;
+	font-weight: 400;
+	text-align: center;
+	line-height: 50px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.span-after-title {
+	width: 3em;
+	height: 1em;
+}
+/*
+Incoming
+*/
+.IncomingList-Date {
+	padding: 12px 2px 0;
+	margin: 0;
+	font-size: 20px;
+	color: #333;
+}
+
+#IncomingList{
+	width: 100%;
+}
+.IncomingList-Container{
+	position: relative;
+	width: 100%;
+	height: 114px;
+	border-bottom: 1px solid #cecececc;
+}
+.IncomingList-Poster{
+	width: 64px;
+	height: 90px;
+	position: relative;
+	margin-top: 12px;
+	float: left;
+}
+.IncomingList-Info{
+    padding: 12px 14px 12px 0;
+    margin-left: 74px;
+    height: 70px;
+    max-height: 70px;
+    position: relative;
+}
+.IncomingList-SimpleText {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	font-size: 12px;
+}
+
+.cinema-list-item {
+	padding: 13px 15px 13px 0;
+	margin-left: 15px;
+	position: relative;
+	overflow: hidden;
+	border-bottom: 1px solid #cecececc;
+}
+.cinema-list-item-container {
+	display: block;
+	align-items: center;
+	line-height: 1.5;
+}
+.cinema-list-item-title {
+	height: 23px;
+	line-height: 23px;
+	font-size: 16px;
+	color: #000;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.cinema-list-item-location {
+	flex: 1;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	font-size: 13px;
+	color: #666;
+	line-height: 1.5;
+}
+.label-block {
+	height: 17px;
+	line-height: 17px;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	overflow: hidden;
+	font-size: 0;
+	flex-shrink: 0;
+}
+.label-block > div {
+	position: relative;
+	display: inline-block;
+	padding: 0 3px;
+	height: 15px;
+	line-height: 15px;
+	border-radius: 2px;
+	font-size: .6rem;
+	margin-left: 5px;
+}
+.snack {
+	color: #f90;
+	border: 1px solid #f90;
+}
+.hallType {
+	color: #589daf;
+	border: 1px solid #589daf;
+}
+.user_index-header {
+	background-repeat: no-repeat;
+	background-position: 50%;
+	background-size: 100% 150px;
+	height: 150px;
+	overflow: hidden;
+	text-align: center;
+}
+.head-icon {
+	display: inline-block;
+	margin-top: 30px;
+	width: 60px;
+	height: 60px;
+	border-radius: 60px;
+	border: 3px solid #fff;
+}
+#user_id {
+	margin-top: 7px;
+	font-size: 16px;
+	line-height: 22.5px;
+	color: #fff;
+}
+.user_index-container {
+	padding: 0 15px;
+	position: relative;
+	overflow: hidden;
+	text-align: center;
+}
+.title {
+	position: relative;
+	margin: 13px 0 0;
+	font-size: 15px;
+	line-height: 21px;
+	height: 21px;
+	color: #333;
+	z-index: 9;
+	display: inline-block;
+	width: 80px;
+	background-color: #f9f9f9;
+}
+.title-line {
+	position: absolute;
+	top: 23px;
+	left: 50%;
+	margin-left: -80px;
+	width: 160px;
+	height: 1px;
+	background-color: #ddd;
+}
+.order-item {
+	position: relative;
+	height: 44px;
+	line-height: 44px;
+	font-size: 15px;
+	margin-left: 15px;
+	padding-right: 15px;
+	border-bottom: 1px solid #cecececc;
+	padding-top: 15px;
+}
+.order-item-container {
+	flex: 1;
+	margin-top: 10px;
+	background: #f9f9f9;
+}
+a {
+	cursor: pointer;
+}
+
+.film-detail-Container{
+	position: relative;
+	width: 100%;
+	border-bottom: 1px solid #cecececc;
+}
+.film-detail-Poster{
+	width: 64px;
+	height: 90px;
+	position: relative;
+	margin-top: 12px;
+	float: left;
+}
+.film-detail-Info{
+    padding: 12px 14px 12px 0;
+    margin-left: 74px;
+    position: relative;
+}
+.film-detail-SimpleText{
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	font-size: 12px;
+}
+#showDays {
+	width: 100%;
+	background-color: #f9f9f9;
+	overflow-x: scroll;
+	height: 45px;
+}
+#timeline {
+	padding: 0;
+	margin: 0;
+	white-space: nowrap;
+	overflow-x: scroll;
+	height: 45px;
+}
+.showDay {
+    position: relative;
+	display: inline-block;
+	width: 115px;
+	line-height: 43px;
+	margin-left: 4.5px;
+	font-size: 14px;
+	text-align: center;
+	list-style: none;
+}
+.showFilm {
+    position: relative;
+	display: inline-block;
+	width: 115px;
+	line-height: 43px;
+	margin-left: 4.5px;
+	font-size: 14px;
+	text-align: center;
+	list-style: none;
+}
+.chosen {
+	border-bottom: 2px solid #f03d37;
+	color: #f03d37;
+}
+.film-line {
+	height: 1px;
+	background-color: #cecece;
+	margin-top: -1px;
+}
+.ui-film-btn {
+	top: 8px;
+}
+.order-title {
+	height: 24px;
+	line-height: 24px;
+	font-size: 14px;
+	font-weight: 700;
+	color: #333;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.order-info {
+	font-size: 14px;
+	padding-top: 1px;
+	line-height: 1;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.seat-wrap {
+	width: 1012px;
+	background-color: #efefef;
+	height: 360px;
+	margin: 0px auto;
+	margin-top: 10px;
+}
+.wrap {
+	display: inline-block;
+	padding: 6px 3px;
+	margin-left: 10px;
+}
+.seat {
+	width: 40px;
+	height: 36px;
+	font-size: 1em;
+	box-sizing: border-box;
+	line-height: 12px;
+	text-align: center;
+	background-size: contain;
+	color: #fff;
+	position: relative;
+	margin: 0px auto;
+	cursor: pointer;
+}
+.seat-full {
+	background-image: url("../img/seat/full.png");
+	background-repeat: no-repeat;
+	background-color: #efefef;
+}
+.seat-empty {
+	background-image: url("../img/seat/empty.png");
+	background-repeat: no-repeat;
+	background-color: #efefef;
+}
+.seat-chosen {
+	background-image: url("../img/seat/chosen.png");
+	background-repeat: no-repeat;
+	background-color: #efefef;
+}
+.seat-type-info {
+	text-align: center;
+}
+.text-middle {
+	vertical-align: middle;
+	content: "";
+	display: inline-block;
+	height: 100%;
+	font-family: PingFangSC-Regular,Hiragino Sans GB,sans-serif;
+	color: gray;
+}
+.icon {
+	vertical-align: middle;
+	display: inline-block;
+	width: 40px;
+	height: 36px;
+	background-repeat: no-repeat;
+	background-size: 100%;
+	margin-right: 4px;
+}
+.c {
+	background-image: url("../img/seat/empty.png");
+}
+.u {
+	background-image: url("../img/seat/full.png");
+}
+.s {
+	background-image: url("../img/seat/chosen.png");
+}
+.text {
+	display: inline-block;
+	height: 36px;
+	margin-top: 16px;
+}
+.seat-text-info {
+	padding-top: 6px;
+	font-size: 8px;
+}
+.price-block {
+	padding: 10px;
+	width: 100%;
+	height: 55px;
+}
+.title-block {
+	position: relative;
+	margin: 0;
+	padding-top: 5px;
+	height: 20px;
+	color: #333;
+	font-size: 11px;
+}
+.selected-seat-item {
+	position: relative;
+	float: left;
+	margin: 5px 2px;
+	width: 80px;
+	height: 37px;
+	background-size: 80px 37px;
+	text-align: center;
+	background-image: url(../img/seat/price-tag.png);
+}
+.selected-seat-info {
+	padding-top: 5px;
+	font-size: 12px;
+	color: #333;
+	margin: 0;
+	font-family: PingFangSC-Regular;
+}
+.price-info {
+	position: relative;
+	font-size: 11px;
+	color: #fa5939;
+	line-height: 15px;
+	font-family: PingFangSC-Regular;
+	font-weight: bold;
+}
+.close {
+	position: absolute;
+	top: 8px;
+	right: 5px;
+}
+#alarmfive {
+	width: 40%;
+	height: 40px;
+	margin: 0px auto;
+	text-align: center;
+	background-color: #3b3b3b;
+	color: #fff;
+	font-weight: bold;
+	padding-top: 20px;
+	border-radius: 4px;
+	position: absolute;
+	top: 380px;
+	left: 30vw;
+}
+.ewm-container {
+	width: 200px;
+	margin: 0px auto;
+}
+.order_id {
+	font-size: 14px;
+	padding-top: 1px;
+	line-height: 1;
+	text-overflow: ellipsis;
+	margin: 0px auto;
+	text-align: center;
+	color: #589daf;
+}
+.order-box-container {
+	background-color: #;
+	margin-bottom: 10px;
+	border: 1px solid #cecece;
+}
+.order-title {
+	display: -webkit-box;
+	display: flex;
+	padding: 0 15px;
+}
+.order-film-title {
+	display: inline-block;
+	text-align: left;
+	-webkit-box-flex: 1;
+	flex: 1 1 auto;
+	line-height: 38px;
+	height: 38px;
+	font-size: 13px;
+	color: #666;
+	margin-right: 6px;
+}
+.user_order-info {
+	margin: 12px 15px;
+	overflow: hidden;
+	position: relative;
+	display: -webkit-box;
+	display: flex;
+}
+.user_order-img {
+	flex: 0 0 auto;
+	width: 57px;
+	height: 80px;
+}
+.order-desc {
+	flex: 1 1 auto;
+	margin-left: 12px;
+	margin-top: 4px;
+	overflow: hidden;
+}
+.movie-name {
+	font-size: 15px;
+	color: #000;
+	line-height: 21px;
+	height: 21px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.showTime {
+	font-size: 12px;
+	color: #888;
+	line-height: 18px;
+	height: 18px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.order-position {
+	font-size: 12px;
+	color: #888;
+	line-height: 18px;
+	height: 18px;
+}
+.order-more {
+	margin-left: 15px;
+	padding: 0 15px 0 0;
+	border-top: 1px solid #cecece;
+}
+.price {
+	line-height: 42px;
+	height: 42px;
+	font-size: 13px;
+	color: #888;
+	display: inline-block;
+}
+.status {
+	color: #333;
+	float: right;
+	line-height: 42px;
+	height: 42px;
+	font-size: 13px;
+	color: #888;
+	display: inline-block;
+}
+#film_brief {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	font-size: 12px;
+}
+.film-like-section {
+	border-top: 1px solid #e5e5e5;
+	border-bottom: 1px solid #e5e5e5;
+	margin: .2rem 0;
+}
+.film-like-section-list {
+	width: 100%;
+	padding: 15px 0 20px 15px;
+	margin: 0;
+	list-style: none;
+	overflow-x: scroll;
+	white-space: nowrap;
+	box-sizing: border-box;
+}
+.film-like-actors {
+	width: 63px;
+	height: 79.6px;
+	margin: 4px;
+}
+.film-like-actorname {
+	text-overflow: ellipsis;
+}
+.film-like-li {
+	padding-left: 0;
+	text-align: center;
+	display: inline-block;
+	list-style: none;
+	white-space: nowrap;
+}
+.actors {
+	color: black;
+	text-overflow: ellipsis;
+	font-size: 16px;
+	font: 16px/1.5 Arial,Helvetica,sans-serif;
+}
+.roles {
+	color: #adadad;
+	text-overflow: ellipsis;
+	font-size: 12px;
+	font: 12px/1.5 Arial,Helvetica,sans-serif;
+}
+.comment-list {
+	margin-left: 30px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font: 14px/1.5 Arial,Helvetica,sans-serif;
+}
+.comment-list-item {
+	padding-left: 0;
+	border-bottom: 1px solid #e5e5e5;
+}
+.comment-header {
+	display: block;
+}
+.rating {
+	font-size: 13px;
+	margin-right: 1px;
+	width: 99px;
+	height: 15px;
+	display: inline-block;
+}
+.noneBg {
+	width: 13px;
+	height: 13px;
+	font-size: 13px;
+}
+.timeago {
+	color: #999;
+	position: relative;
+	float: right;
+	font-size: 13px;
+}
+.comment-body {
+	margin-top: 1px;
+	margin-bottom: 1px;
+	border-bottom: none !important;
+}
+.content {
+	font-size: 13px;
+	line-height: 1.5;
+	text-align: justify;
+	margin: 0;
+	word-wrap: break-word;
+	padding: 0 !important;
+}
+.avatar-img {
+	float: left;
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	display: inline-block;
+}
+.com-nick {
+	display: inline-block;
+	max-width: 100px;
+	color: #999;
+	font-size: 13px;
+	font-style: normal;
+	margin-left: 5px;
+	vertical-align: inherit;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	padding-top: 4px;
+}

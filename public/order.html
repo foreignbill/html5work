@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+	<link rel="stylesheet" type="text/css" href="css/Main.css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(e) {
+			var info = $.cookie('order-info');
+			var strArray = info.split('#');
+			var usr_name = strArray[0];
+			var film_name = strArray[1];
+			var c_name = strArray[2];
+			var f_time = strArray[3];
+			var f_date = strArray[4];
+			console.log($(".order-title"));
+			$(".order-title").text(film_name);
+			$(".order-info").children("span").text(f_date+" "+f_time);
+			strArray[0] = $.cookie('user_who_login');
+			console.log(strArray);
+			if(strArray[0] == 'null' || strArray[0] == undefined) {
+				window.location.href = "login.html";
+			}
+			for(var i=0;i<49;i++) {
+				$(".seat-wrap").append("<div class='wrap'>"
+											+"<div class='seat seat-empty'>"
+												+"<span class='seat-text-info' seat-id='"+i+"'>"
+												+"<div>"+(Math.floor(i/7)+1)+"排</div>"
+												+"<div>"+(i%7+1)+"座</div></span>"
+											+"</div>"
+										+"</div>");
+				if(i % 7 == 6) $(".seat-wrap").append("<br>");
+			}
+			$.ajax({
+				url:"http://127.0.0.1:8081/checkseats?film_name="+film_name+"&c_name="+c_name+"&f_date="+f_date+"&f_time="+f_time,
+				type:"POST",
+	       		dataType:"JSON",
+	       		success: function(data) {
+	       			console.log(data);
+	       			for(var i=0;i<data.length;i++) {
+	       				var now = data[i].seats_id;
+	       				$(".seat").each(function(){
+	       					if($(this).children("span:eq(0)").attr('seat-id') == now)
+	       						$(this).attr('class','seat seat-full');
+	       				});
+	       			}
+	       		},
+	       		error:function(error) {
+	       			console.log("Fuck you");
+	       		}
+			});
+			$(".seat").each(function() {
+				$(this).click(function(){
+					if($(this).attr('class') == "seat seat-empty") {
+						if($(".close").length == 5) {
+							$("#Index").children("div:eq(1)").append("<div id='alarmfive'>最多选择5个座位</div>");
+							setTimeout(function(){
+								$("#alarmfive").remove();
+							},1200);
+							return;
+						}
+						$(this).attr('class',"seat seat-chosen");
+						$(".price-block").append("<div class='selected-seat-item' seat-id='"+$(this).children("span:eq(0)").attr('seat-id')+"'>"
+									            	+"<p class='selected-seat-info'>"+$(this).children("span:eq(0)").children("div:eq(0)").text()+$(this).children("span:eq(0)").children("div:eq(1)").text()+"</p>"
+									            	+"<p class='price-info'>¥35</p>"
+									            	+"<span class='close'>x</span>"
+									            +"</div>");
+						$(".close").each(function() {
+							$(this).click(function() {
+								var obj = $(this).parent().children("p:eq(0)").text();
+								console.log(obj);
+								if($(".close").length == 5) {
+									$("#alarmfive").remove();
+								}
+								$(this).parent().remove();
+								$(".seat.seat-chosen").each(function() {
+									var cmp = $(this).children("span:eq(0)").children("div:eq(0)").text()+$(this).children("span:eq(0)").children("div:eq(1)").text();
+									if(cmp == obj) $(this).attr('class','seat seat-empty');
+								});
+							});
+						});
+					} else if($(this).attr('class') == "seat seat-chosen") {
+						$(this).attr('class',"seat seat-empty");
+						var cmp = $(this).children("span:eq(0)").children("div:eq(0)").text()+$(this).children("span:eq(0)").children("div:eq(1)").text();
+						if($(".close").length == 5) {
+							$("#alarmfive").remove();
+						}
+						$(".close").each(function() {
+							var obj = $(this).parent().children("p:eq(0)").text();
+							if(obj == cmp)
+								$(this).parent().remove();
+						});
+					}
+				});
+			});
+
+			$("#submit_order").click(function() {
+				if($(".close").length == 0) {
+					$("#Index").children("div:eq(1)").append("<div id='alarmfive'>请选择至少1张票</div>");
+					setTimeout(function(){
+						$("#alarmfive").remove();
+					},1200);
+				} else {
+					var str="";
+					for(var i=0;i<$(".close").length;i++)
+						if(i == 0) str = $(".price-block").children("div:eq('"+(i+1)+"')").attr('seat-id');
+						else str += '-' + $(".price-block").children("div:eq('"+(i+1)+"')").attr('seat-id');
+					var user_id = $.cookie('user_who_login');
+					$.ajax({
+						url:"http://127.0.0.1:8081/create_order?user_id="+user_id+"&film_name="+film_name+"&c_name="+c_name+"&f_date="+f_date+"&f_time="+f_time+"&seat_info="+str,
+						type:"POST",
+			       		dataType:"JSON",
+			       		success: function(data) {
+			       			console.log(data);
+			       			$.cookie('order_id',data,{expires:7});
+			       			window.location.href = "success.html";
+			       		},
+			       		error:function(error) {
+			       			console.log("Fuck you");
+			       		}
+					});
+				}
+			});
+		});
+	</script>
+</head>
+
+<body>
+	<div data-role="page" id="Index">
+		<div data-role="header" style="text-align: center;line-height:3em;">
+			<button class="ui-film-btn ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back" onclick="javascript:history.back(-1);">back</button>
+			<h>选择座位</h>
+		</div>
+		<div data-role="content">
+			<div class="order-title"></div>
+			<div class="order-info">
+				<span style="width: 120px; color: gray;"></span>
+			</div>
+			<div style="width: 100%; overflow-x: scroll;">
+				<div class="seat-wrap">
+				</div>
+			</div>
+			<div class="seat-type-info">
+		        <span class="text-middle"><span class="c icon"></span><span class="text">可选</span></span>
+		        <span class="text-middle"><span class="u icon"></span><span class="text">已选</span></span>
+		        <span class="text-middle"><span class="s icon"></span><span class="text">已售</span></span>
+		    </div>
+	    </div>
+	    <div class="price-block">
+	    	<div class="title-block">已选座位:</div>
+	    </div>
+
+		<div data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+                	<li class="footer-list"><a id="submit_order" class="ui-link ui-btn ui-btn-active" data-iconpos="left">确认购票</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+	<link rel="stylesheet" type="text/css" href="css/Main.css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(e) {
+			var obj = $.cookie('now_cinema');
+			$.ajax({
+				url:"http://127.0.0.1:8081/searchcinema?c_name="+obj,
+				type:"POST",
+	       		dataType:"JSON",
+	       		success: function(data) {
+	       			for(var i=0;i<data.length;i++)
+		       			$("#filmline").append(
+							"<li class='showFilm' data-film='"+data[i].f_title+"'>"
+								+data[i].f_title
+							+"</li>"
+		       			);
+		       		$("#filmline").children("li:eq(0)").attr('class','showFilm chosen');
+		       		update();
+		       		$(".showFilm").each(function(){
+						$(this).click(function(){
+							$(".showFilm.chosen").attr('class','showFilm');
+							$(this).attr('class','showFilm chosen');
+							$("#film-list").empty();
+							update();
+						});
+					});
+	       		},
+	       		error:function(error) {
+	       			console.log("Fuck you");
+	       		}
+			});
+
+			function addDate(date,days){ 
+		       var d=new Date(date); 
+		       d.setDate(d.getDate()+days); 
+		       var m=d.getMonth()+1; 
+		       if(m<10) m="0"+m;
+		       var day = d.getDate();
+		       if(day<10) day="0"+day;
+		       return d.getFullYear()+'-'+m+'-'+day; 
+		    }
+
+			var daynow = '2018-08-01';
+			for(var i=0;i<7;i++) {
+				var d=new Date(daynow);
+				var m=d.getMonth()+1;
+				var day=d.getDate();
+				$("#timeline").append(
+					"<li data-day='"+daynow+"' class='showDay'>"
+						+m+"月"+day+"日"
+					+"</li>"
+				);
+				daynow = addDate(daynow,1);
+			}
+
+			daynow = '2018-08-01';
+			function update() {
+				console.log(daynow);
+				var film_name=$(".showFilm.chosen").attr('data-film');
+				var c_name=$.cookie('now_cinema');
+				console.log(c_name);
+				$.ajax({ 
+			        url:"http://127.0.0.1:8081/searchfilm_from_cinema?c_name="+c_name+"&film_date="+daynow+"&film_name="+film_name, 
+			        type:"POST",
+			        dataType:"JSON",  // 处理Ajax跨域问题
+			        success: function(data) { 
+			        	console.log(data);
+			        	for(var i=0;i<data.length;i++) {
+			        		$("#film-list").append(
+								"<div class='cinema-list-item'>"
+									+"<div class='cinema-list-item-container'>"
+										+"<div class='cinema-list-item-title'>"
+											+"<span>"+data[i].f_title+"</span>"
+										+"</div>"
+										+"<div class='cinema-list-item-location'>"+data[i].f_time+"</div>"
+										+"<div class='flex'></div>"
+										+"<div class='button-block'>"
+		                        			+"<div class='btn' f-title='"+data[i].f_title+"' f-time='"+data[i].f_time+"' f-date='"+daynow+"'><span class='span-fix'>购票</span></div>"
+	      								+"</div>"
+									+"</div>"
+								+"</div>"
+			        		);
+			        	}
+
+			        	$(".btn").each(function(){
+			        		$(this).click(function(){
+			        			var str = "";
+			        			str = $.cookie('user_who_login');
+			        			str += "#" + $(this).attr('f-title');
+			        			str += "#" + $.cookie('now_cinema');
+			        			str += "#" + $(this).attr('f-time');
+			        			str += "#" + $(this).attr('f-date');
+			        			$.cookie('order-info',str,{expires: 7});
+			        			window.location.href="order.html";
+			        		});
+			        	});
+			        },
+			        error: function(error) {
+			        	console.log("fuck you");
+			        }
+			    });
+			}
+
+			$(".cinema-list-item-title").children("span:eq(0)").text($.cookie('now_cinema'));
+			$(".cinema-list-item-location").text($.cookie('now_loc'));
+
+			$("#timeline").children("li:eq(0)").attr('class','showDay chosen');
+			$(".showDay").each(function(){
+				$(this).click(function(){
+					$(".showDay.chosen").attr('class','showDay');
+					$(this).attr('class','showDay chosen');
+					$("#film-list").empty();
+					daynow = $(this).attr('data-day');
+					update();
+				});
+			});
+		});
+	</script>
+</head>
+
+<body>
+	<div data-role="page" id="Index">
+		<div data-role="header" style="text-align: center;line-height:3em;">
+			<button class="ui-film-btn ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back" onclick="javascript:history.back(-1);">back</button>
+			<h>影院</h>
+		</div>
+		<div data-role="content">
+
+			<div class="cinema-list-item">
+				<div class="cinema-list-item-container">
+					<div class="cinema-list-item-title">
+						<span></span>
+					</div>
+					<div class="cinema-list-item-location"></div>
+					<div class="flex"></div>
+					<div class="label-block">
+						<div class="snack">小吃</div>
+						<div class="hallType">杜比全景声厅</div>
+						<div class="hallType">4D厅</div>
+						<div class="hallType">巨幕厅</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="showFilms">
+			    <ul id="filmline" class="mb-line-b">
+			    </ul>
+			</div>
+
+			<div id="showDays">
+			    <ul id="timeline" class="mb-line-b">
+			    </ul>
+			</div>
+
+			<div class="film-line"></div>
+
+			<div id="film">
+				<div id="film-list">
+				</div>
+			</div>
+	    </div>
+		<div data-role="footer" data-position="fixed">
+		</div>
+	</div>
+</body>
+</html>

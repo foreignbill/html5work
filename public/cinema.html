@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+	<link rel="stylesheet" type="text/css" href="css/Main.css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(e){
+			$.ajax({ 
+		        url:"http://127.0.0.1:8081/cinema.html", 
+		        type:"POST",
+		        dataType:"JSON",  // 处理Ajax跨域问题
+		        success: function(data) { 
+		        	for(var i=0;i<data.length;i++) {
+		        		$("#cinema-list").append(
+		        			"<div class='cinema-list-item'>"
+								+"<div class='cinema-list-item-container'>"
+									+"<div class='cinema-list-item-title'>"
+							            +"<span>"+data[i].c_name+"</span>"
+							        +"</div>"
+							        +"<div class='cinema-list-item-location'>"+data[i].c_loc+"</div>"
+									+"<div class='flex'></div>"
+									+"<div class='label-block'>"
+							                +"<div class='snack'>小吃</div>"
+							                +"<div class='hallType'>杜比全景声厅</div>"
+							                +"<div class='hallType'>4D厅</div>"
+							                +"<div class='hallType'>巨幕厅</div>"
+							        +"</div>"
+								+"</div>"
+							+"</div>"
+		        		);
+		        	}
+
+		        	$(".cinema-list-item-container").each(function(){
+				    	$(this).click(function(){
+				    		$.cookie('now_cinema',$(this).children("div:eq(0)").text(),{expires:7});
+				    		$.cookie('now_loc',$(this).children("div:eq(1)").text(),{expires:7});
+				    		window.location.href="cinema_detail.html";
+				    	});
+				    });
+		        },
+		        error: function(error) {
+		        	console.log("fuck you");
+		        }
+		    });
+		});
+	</script>
+</head>
+
+<body>
+	<div data-role="page" id="Index">
+		<div data-role="header" style="text-align: center;line-height:3em;">
+			<h>影院</h>
+		</div>
+		<div data-role="content">
+			<div id="cinema">
+				<div id="cinema-list">
+				</div>
+			</div>
+		</div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+                	<li class="footer-list"><a onclick="window.location.href='index.html'" data-icon="home" data-iconpos="left">正在热映</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='incoming.html'" data-icon="star">即将播放</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='cinema.html'" data-icon="search"  class="ui-btn-active">影院</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='user_index.html'" data-icon="gear">我的</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+	<link rel="stylesheet" type="text/css" href="css/Main.css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript">
+		var obj = $.cookie('user_who_login');
+		if(obj == 'null' || obj == undefined) window.location.href="login.html";
+		$(document).ready(function(){
+			var user_id = $.cookie('user_who_login');
+			$.ajax({ 
+		        url:"http://127.0.0.1:8081/search_order_user?user_id="+user_id, 
+		        type:"POST",
+		        dataType:"JSON",  // 处理Ajax跨域问题
+		        success: function(data) { 
+		        	for(var i=0;i<data.length;i++) {
+		        		var f_date = data[i].f_date.split('T');
+		        		$("#orderList").append(
+							"<div class='order-box-container'>"
+								+"<div class='order-title'>"
+									+"<span class='order-film-title'>  "
+									+data[i].c_name
+									+"</span>"
+								+"</div>"
+								+"<div class='user_order-info'>"
+									+"<img class='user_order-img' src='"+data[i].file_poster+"' alt=''>"
+									+"<div class='order-desc'>"
+									+"<div class='movie-name'>"+data[i].f_title+"</span></div>"
+									+"<div class='showTime'>"+f_date[0]+" "+data[i].f_time+"</div>"
+									+"<div class='order-position'>"
+									+"<span style='display: inline-block;'>8排12座</span>"
+									+"<span style='display: inline-block;'>8排11座</span>  "
+									+"</div>"
+									+"</div>"
+									+"</div> "
+									+"<div class='order-more'>"
+									+"<div class='price'>总价：66元</div>"
+									+"<div class='status'>已完成</div>  "
+								+"</div>"
+							+"</div>"
+		        		);
+		        	}
+		        },
+		        error: function(error) {
+		        	console.log("fuck you");
+		        }
+		    });
+		});
+		function logout() {
+			$.cookie('user_who_login',null);
+			window.location.href="index.html";
+		}
+	</script>
+</head>
+
+<body>
+	<div data-role="page" id="Index">
+		<div data-role="header" style="text-align: center;line-height:3em;">
+			<button class="ui-film-btn ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back" onclick="javascript:history.back(-1);">back</button>
+			<h>我的订单</h>
+		</div>
+		<div id="orderList" data-role="content">
+
+	    </div>
+		<div data-role="footer" data-position="fixed">
+		</div>
+	</div>
+</body>
+</html>

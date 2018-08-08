@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+	<link rel="stylesheet" type="text/css" href="css/Main.css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript" src="js/sha1.js"></script>
+	<script type="text/javascript">
+		//var sha = hex_sha1('mima123465')
+		//console.log(sha);
+		//console.log();
+		function login() {
+			$.ajax({ 
+		        url:"http://127.0.0.1:8081/login?user_name="+$('#user_name').val()+"&user_pwd="+$('#user_pwd').val(), 
+		        type:"POST",
+		        dataType:"JSON",  // 处理Ajax跨域问题
+		        success: function(data) { 
+		        	if(data.user_login == false) {
+		        		$("#tips").css("display","block");
+		        	} else {
+		        		$.cookie('user_who_login', data.user_name, {expires:7}); // last for seven days
+		        		var str = document.referrer;
+		        		if(str.indexOf("register.html")!=-1) {
+		        			window.location.href = "index.html";
+		        		} else javascript:history.back(-1);
+		        		//javascript:history.replaceState();
+		        	}
+		        },
+		        error: function(error) {
+		        	console.log("fuck you");
+		        }
+		    });
+		}
+	</script>
+</head>
+
+<body>
+	<div data-role="page" id="Index">
+		<div data-role="header" style="text-align: center;line-height:3em;">
+			<h>🏝🚢</h>
+		</div>
+		<div data-role="content">
+			<div id="tips" style="display: none; transform-origin: 0px 0px 0px; opacity: 1; transform: scale(1, 1);">账号或密码错误，请检查后重新登陆。</div>
+			<input id="user_name" type="text" name="user_name" placeholder="账号/邮箱">
+			<input id="user_pwd" type="password" name="user_pwd" placeholder="密码">
+			<input type="submit" value="登陆" onclick="login()">
+			<a onclick="window.location.href='register.html';">注册账号</a>
+			<a style="float: right;">忘记密码</a>
+		</div>
+		<div data-role="footer" data-position="fixed">
+			<div data-role="navbar">
+				<ul>
+                	<li class="footer-list"><a onclick="window.location.href='index.html'" data-icon="home" data-iconpos="left">正在热映</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='incoming.html'" data-icon="star">即将播放</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='cinema.html'" data-icon="search">影院</a></li>
+                    <li class="footer-list"><a onclick="window.location.href='user_index.html'" data-icon="gear">我的</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

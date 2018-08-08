@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=0">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.css">
+	<link rel="stylesheet" type="text/css" href="css/Main.css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(e) {
+			var order_id = $.cookie('order_id');
+			var info = $.cookie('order-info');
+			var strArray = info.split('#');
+			var usr_name = strArray[0];
+			var film_name = strArray[1];
+			var c_name = strArray[2];
+			var f_time = strArray[3];
+			var f_date = strArray[4];
+			console.log($(".order-title"));
+			$(".order-title").text(film_name);
+			$(".order-info").children("span").text(f_date+" "+f_time);
+			console.log(order_id);
+			$(".order_id").text('取票号:'+order_id);
+		});
+	</script>
+</head>
+
+<body>
+	<div data-role="page" id="Index">
+		<div data-role="header" style="text-align: center;line-height:3em;">
+			<button class="ui-film-btn ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back" onclick="window.location.href='index.html';">首页</button>
+			<h>取票</h>
+		</div>
+		<div data-role="content">
+			<div class="order-title"></div>
+			<div class="order-info">
+				<span style="width: 120px; color: gray;"></span>
+			</div>
+			<div class="ewm-container">
+				<img src="img/ewm/test.png">
+			</div>
+			<span class="order_id"></span>
+	    </div>
+
+		<div data-role="footer" data-position="fixed">
+		</div>
+	</div>
+</body>
+</html>
