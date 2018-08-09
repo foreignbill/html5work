@@ -265,7 +265,7 @@ app.post('/searchfilm_from_cinema', urlencodedParser,function (req, res) {
 	  database : 'html5work'
 	});
 	connection.connect();
-	connection.query("select distinct f_title,f_time,f_date from film_play,cinema_info where c_name='"+c_name+"' and film_play.c_id=cinema_info.c_id and f_date='"+film_date+"' and f_title='"+film_name+"'", function (error, results, fields) {
+	connection.query("select distinct f_title,f_time,f_date,price from film_play,cinema_info where c_name='"+c_name+"' and film_play.c_id=cinema_info.c_id and f_date='"+film_date+"' and f_title='"+film_name+"'", function (error, results, fields) {
 		if (error) throw error;
 		console.log(results);
 		res.end(JSON.stringify(results));
@@ -315,6 +315,7 @@ app.post('/create_order', urlencodedParser,function (req, res) {
 	var c_name = req.query.c_name;
 	var f_date = req.query.f_date;
 	var f_time = req.query.f_time;
+	var order_price = req.query.order_price;
 	var seat_info = req.query.seat_info;
 	var order_id = "";
 	for(var i=0;i<f_date.length;i++)
@@ -348,8 +349,8 @@ app.post('/create_order', urlencodedParser,function (req, res) {
 	});
 	res.end(JSON.stringify(order_id));
 	connection.connect();
-	var addSqlParams=[order_id,u_id,f_title,f_date,f_time,c_name];
-	connection.query("Insert into order_table(order_id,user_id,f_title,f_date,f_time,c_name) values(?,?,?,?,?,?)",addSqlParams,function (error,results) {
+	var addSqlParams=[order_id,u_id,f_title,f_date,f_time,c_name,order_price];
+	connection.query("Insert into order_table(order_id,user_id,f_title,f_date,f_time,c_name,order_price) values(?,?,?,?,?,?,?)",addSqlParams,function (error,results) {
 		if (error) throw error;
 	});
 	seat_info = seat_info.split('-');
@@ -391,8 +392,149 @@ app.post('/search_order_user', urlencodedParser,function (req, res) {
 	  database : 'html5work'
 	});
 	connection.connect();
-	connection.query("select order_id,user_id,order_table.f_date as f_date,order_table.f_time as f_time,order_table.f_title as f_title,c_name,file_poster from order_table,film_info where order_table.f_title=film_info.f_title and user_id='"+u_id+"' order by order_table.f_date desc",function (error,results,fields) {
+	connection.query("select order_id,user_id,left(order_table.f_date,100) as f_date,order_table.f_time as f_time,order_table.f_title as f_title,c_name,file_poster,order_price from order_table,film_info where order_table.f_title=film_info.f_title and user_id='"+u_id+"' order by order_table.f_date desc",function (error,results,fields) {
 		if (error) throw error;
+		console.log(results);
+		res.end(JSON.stringify(results));
+	});
+})
+
+app.post('/searchactors_want_to_see', urlencodedParser,function (req, res) {
+	var u_id = req.query.user_id;
+	var f_title = req.query.film_name;
+	var mysql      = require('mysql');
+	var connection = mysql.createConnection({
+	  host     : 'localhost',
+	  user     : 'root',
+	  password : 'root',
+	  database : 'html5work'
+	});
+	connection.connect();
+	connection.query("select * from user_want where user_id='"+u_id+"' and f_title='"+f_title+"'",function (error,results,fields) {
+		if (error) throw error;
+		console.log(results);
+		res.end(JSON.stringify(results));
+	});
+})
+
+app.post('/update_want_to_see', urlencodedParser,function (req, res) {
+	var u_id = req.query.user_id;
+	var f_title = req.query.film_name;
+	var mysql      = require('mysql');
+	var connection = mysql.createConnection({
+	  host     : 'localhost',
+	  user     : 'root',
+	  password : 'root',
+	  database : 'html5work'
+	});
+	connection.connect();
+	var addSqlParams=[u_id,f_title];
+	connection.query("insert into user_want(user_id,f_title) values(?,?)",addSqlParams,function (error,results) {
+		console.log(results);
+		res.end(JSON.stringify(results));
+	});
+})
+
+app.post('/delete_want_to_see', urlencodedParser,function (req, res) {
+	var u_id = req.query.user_id;
+	var f_title = req.query.film_name;
+	var mysql      = require('mysql');
+	var connection = mysql.createConnection({
+	  host     : 'localhost',
+	  user     : 'root',
+	  password : 'root',
+	  database : 'html5work'
+	});
+	connection.connect();
+	var addSqlParams=[u_id,f_title];
+	connection.query("delete from user_want where user_id='"+u_id+"' and f_title='"+f_title+"'",function (error,results) {
+		console.log(results);
+		res.end(JSON.stringify(results));
+	});
+})
+
+app.post('/search_user_want', urlencodedParser,function (req, res) {
+	var u_id = req.query.user_id;
+	var mysql      = require('mysql');
+	var connection = mysql.createConnection({
+	  host     : 'localhost',
+	  user     : 'root',
+	  password : 'root',
+	  database : 'html5work'
+	});
+	connection.connect();
+	connection.query("select film_info.* from user_want,film_info where user_id='"+u_id+"' and user_want.f_title=film_info.f_title",function (error,results,fields) {
+		console.log(results);
+		res.end(JSON.stringify(results));
+	});
+})
+
+app.post('/update_comment', urlencodedParser,function (req, res) {
+	var u_id = req.query.user_id;
+	var f_title = req.query.f_title;
+	var text = req.query.comment;
+	var stars = req.query.stars;
+	var c_date = req.query.c_date;
+	var c_time = req.query.c_time;
+	console.log(req.query);
+	var mysql      = require('mysql');
+	var connection = mysql.createConnection({
+	  host     : 'localhost',
+	  user     : 'root',
+	  password : 'root',
+	  database : 'html5work'
+	});
+	connection.connect();
+	var addSqlParam=[u_id,f_title,text,stars,c_date,c_time];
+	connection.query("insert into user_comment_film(user_id,f_title,user_comment,stars,c_date,c_time) values(?,?,?,?,?,?)",addSqlParam,function (error,results) {
+		console.log(results);
+		res.end(JSON.stringify(results));
+	});
+})
+
+app.post('/search_comment', urlencodedParser,function (req, res) {
+	var f_title = req.query.f_title;
+	var mysql      = require('mysql');
+	var connection = mysql.createConnection({
+	  host     : 'localhost',
+	  user     : 'root',
+	  password : 'root',
+	  database : 'html5work'
+	});
+	connection.connect();
+	connection.query("select * from user_comment_film where f_title='"+f_title+"' order by c_date desc,c_time desc",function (error,results,fields) {
+		console.log(results);
+		res.end(JSON.stringify(results));
+	});
+})
+
+app.post('/search_order_seat', urlencodedParser,function (req, res) {
+	var order_id = req.query.order_id;
+	var mysql      = require('mysql');
+	var connection = mysql.createConnection({
+	  host     : 'localhost',
+	  user     : 'root',
+	  password : 'root',
+	  database : 'html5work'
+	});
+	connection.connect();
+	connection.query("select * from order_seat where order_id='"+order_id+"'",function (error,results,fields) {
+		console.log(results);
+		res.end(JSON.stringify(results));
+	});
+})
+
+app.post('/search_movie', urlencodedParser,function (req, res) {
+	var f_title = req.query.f_title;
+	var mysql      = require('mysql');
+	var connection = mysql.createConnection({
+	  host     : 'localhost',
+	  user     : 'root',
+	  password : 'root',
+	  database : 'html5work'
+	});
+	connection.connect();
+	connection.query("select * from film_movie where f_title='"+f_title+"'",function (error,results,fields) {
 		console.log(results);
 		res.end(JSON.stringify(results));
 	});

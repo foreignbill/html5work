@@ -11,16 +11,88 @@
 	<script type="text/javascript" src="js/jquery.mobile-1.4.5.js"></script>
 	<script type="text/javascript">
 		var obj = $.cookie('user_who_login');
-		console.log(obj);
-		if(obj == 'null' || obj == undefined) window.location.href="login.html";
-		$(document).ready(function(){
-			if(obj == 'null' || obj == undefined) {
+		$.ajax({
+			url:"http://127.0.0.1:8081/search_user_want?user_id="+obj,
+			type:"POST",
+			dataType:"JSON",
+			success: function(data) {
+				console.log(data);
+				for(var i=0;i<data.length;i++) {
+					$("#content_box").append(
+	            		"<div id='Popular"+i+"'class='PopularList-Container' data-f_title='"+data[i].f_title+"'>"
+	            			+"<div class='PopularList-Poster' style='float: left;'>"
+							+"<img class='poster-click' data-bid='"+data[i].f_title+"' src='"+data[i].file_poster+"'>"
+							+"</div>"
+							+"<div class='PopularList-Info''>"
+								+"<h3>"+data[i].f_title+"<img class='span-after-title' src='img/2dimax.png'>"+"</h3>"
+								+"<span class='PopularList-SimpleText'>观众评分:9.1</span>"
+                        		+"<span class='PopularList-SimpleText'>"+finddirector(data[i].f_title,i)+"</span>"
+                        		+"<span class='PopularList-SimpleText'>"+findactor(data[i].f_title,i)+"</span>"
+                        		+"<span class='PopularList-SimpleText'>简介:"+data[i].f_brief+"</span>"
+                    		+"</div>"
+							+"<div class='button-block'>"
+                        		+"<div class='btn'><span class='span-fix'>购票</span></div>"
+  							+"</div>"
+	            		+"</div>"
+	            	);
+				}
 
-			} else $("#user_name").append(obj);
+				$(".button-block").each(function(index,element) {
+					$(this).click(function(){
+						var obj = $(this).parent()[0];
+						$.cookie('now_film',$(obj).attr('data-f_title'),{expires:7});
+						//var ojb = $.cookie('now_film');
+						//console.log(ojb);
+						window.location.href="film_detail.html";
+					});
+				});
+			},
+			error: function(error) {
+				console.log("fuck you");
+			}
 		});
-		function logout() {
-			$.cookie('user_who_login',null);
-			window.location.href="index.html";
+
+
+		function finddirector(name,id) {
+			var ret;
+			$.ajax({
+				url:"http://127.0.0.1:8081/searchdirectors?film_name="+name,
+				type:"POST",
+	       		dataType:"JSON",
+	       		success: function(data) {
+	       			ret = "导演:";
+	       			for(var i=0;i<data.length;i++){
+	       				if(i>0)
+	       					ret += "/"+data[i].director_name;
+	       				else ret += data[i].director_name;;
+	       			}
+	       			$("#Popular"+id).children("div:eq(1)").children("span:eq(1)").text(ret);
+	       		},
+	       		error:function(error) {
+	       			console.log("Fuck you");
+	       		}
+			});
+		}
+
+	    function findactor(name,id) {
+			var ret;
+			$.ajax({
+				url:"http://127.0.0.1:8081/searchactors?film_name="+name,
+				type:"POST",
+	       		dataType:"JSON",
+	       		success: function(data) {
+	       			ret = "主演:";
+	       			for(var i=0;i<data.length;i++){
+	       				if(i>0)
+	       					ret += "/"+data[i].actor_name;
+	       				else ret += data[i].actor_name;;
+	       			}
+	       			$("#Popular"+id).children("div:eq(1)").children("span:eq(2)").text(ret);
+	       		},
+	       		error:function(error) {
+	       			console.log("Fuck you");
+	       		}
+			});
 		}
 	</script>
 </head>
@@ -31,20 +103,7 @@
 			<button class="ui-film-btn ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-back" onclick="javascript:history.back(-1);">back</button>
 			<h>想看</h>
 		</div>
-		<div data-role="content">
-
-<div id="Popular0" class="PopularList-Container" data-f_title="西红柿首富">
-	<div class="PopularList-Poster" style="float: left;">
-		<img src="img/Popular1.jpg">
-	</div>
-	<div class="PopularList-Info" '="">
-		<h3>西红柿首富<img class="span-after-title" src="img/2dimax.png"></h3>
-		<span class="PopularList-SimpleText">观众评分:9.1</span>
-		<span class="PopularList-SimpleText">导演:彭大魔/闫非</span>
-		<span class="PopularList-SimpleText">主演:宋芸桦/张一鸣/沈腾</span>
-		<span class="PopularList-SimpleText">简介:《西虹市首富》的故事发生在《夏洛特烦恼》中的“特烦恼”之城“西虹市”。混迹于丙级业余足球队的守门员王多鱼（沈腾饰演），因比赛失利被开除离队。正处于人生最低谷的他接受了神秘台湾财团“一个月花光十亿资金”的挑战。本以为快乐生活就此开始，王多鱼却第一次感到“花钱特烦恼”！想要人生反转走上巅峰，真的没有那么简单。</span>
-	</div>
-</div>
+		<div id="content_box" data-role="content">
 
 	    </div>
 		<div data-role="footer" data-position="fixed">

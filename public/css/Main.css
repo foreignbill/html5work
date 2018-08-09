@@ -717,3 +717,18 @@ a {
 	white-space: nowrap;
 	padding-top: 4px;
 }
+.movie-start-btn {
+	color: white;
+	right: 1px;
+	bottom: 1px;
+	font-size: 12px;
+	position: absolute;
+	width: 24px;
+	height: 12px;
+	line-height: 12px;
+	opacity: .7;
+	background: #333;
+}
+.movie-box {
+	width: 100%;
+}

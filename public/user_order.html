@@ -20,6 +20,7 @@
 		        dataType:"JSON",  // 处理Ajax跨域问题
 		        success: function(data) { 
 		        	for(var i=0;i<data.length;i++) {
+		        		console.log(data[i].f_date);
 		        		var f_date = data[i].f_date.split('T');
 		        		$("#orderList").append(
 							"<div class='order-box-container'>"
@@ -33,25 +34,49 @@
 									+"<div class='order-desc'>"
 									+"<div class='movie-name'>"+data[i].f_title+"</span></div>"
 									+"<div class='showTime'>"+f_date[0]+" "+data[i].f_time+"</div>"
-									+"<div class='order-position'>"
-									+"<span style='display: inline-block;'>8排12座</span>"
-									+"<span style='display: inline-block;'>8排11座</span>  "
+									+"<div class='order-position' bid='"+data[i].order_id+"'>"
+									/*"<span style='display: inline-block;'>8排12座</span>"
+									+"<span style='display: inline-block;'>8排11座</span>  "*/
 									+"</div>"
 									+"</div>"
 									+"</div> "
 									+"<div class='order-more'>"
-									+"<div class='price'>总价：66元</div>"
+									+"<div class='price'>总价："+data[i].order_price+"元</div>"
 									+"<div class='status'>已完成</div>  "
 								+"</div>"
 							+"</div>"
 		        		);
+		        		find(data[i].order_id);
 		        	}
 		        },
 		        error: function(error) {
 		        	console.log("fuck you");
 		        }
 		    });
+
+		function find(id) {
+			$.ajax({ 
+		        url:"http://127.0.0.1:8081/search_order_seat?order_id="+id, 
+		        type:"POST",
+		        dataType:"JSON",  // 处理Ajax跨域问题
+		        success: function(data) {
+		        	$(".order-position").each(function(){
+		        		if($(this).attr('bid') == id) {
+		        			for(var i=0;i<data.length;i++)
+		        				$(this).append("<span style='display: inline-block;padding-right: 2px;'>"+(Math.floor(data[i].seats_id/7)+1)+"排"+(data[i].seats_id%7+1)+"座"+"</span>");
+		        		}
+		        	});
+		        	return "";
+		        },
+		        error: function(error) {
+		        	console.log("fuck you");
+		        }
+		    });
+		}
+
 		});
+
+
 		function logout() {
 			$.cookie('user_who_login',null);
 			window.location.href="index.html";

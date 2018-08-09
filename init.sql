@@ -41,7 +41,10 @@ create table user_comment_film (
 	user_id VARCHAR(20) NOT NULL,
 	f_title VARCHAR(100) NOT NULL,
 	user_comment VARCHAR(1000) NOT NULL,
-	PRIMARY KEY(user_id,f_title)
+	stars double,
+	c_date DATE,
+	c_time TIME,
+	PRIMARY KEY(user_id,f_title,c_date,c_time)
 );
 ------------------------------------
 create table order_table (

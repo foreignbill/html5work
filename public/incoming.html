@@ -32,7 +32,7 @@
 			            	$("#IncomingList").append(
 			            		"<div id='Incoming"+i+"'class='IncomingList-Container' data-f_title='"+data[i].f_title+"'>"
 			            			+"<div class='IncomingList-Poster' style='float: left;'>"
-										+"<img src='"+data[i].file_poster+"'>"
+										+"<img class='poster-click' data-bid='"+data[i].f_title+"' src='"+data[i].file_poster+"'>"
 									+"</div>"
 									+"<div class='IncomingList-Info''>"
 										+"<h3>"+data[i].f_title+"<img class='span-after-title' src='img/2dimax.png'>"+"</h3>"
@@ -54,6 +54,23 @@
 							var obj = $(this).parent()[0];
 							$.cookie('now_film',$(obj).attr('data-f_title'),{expires:7});
 							window.location.href="film_detail.html";
+						});
+					});
+
+		            $(".poster-click").each(function(){
+						console.log($(this).attr('data-bid'));
+						$(this).click(function(){
+							console.log(this);
+							$.cookie('film_like',$(this).attr('data-bid'));
+							// var u_id = $.cookie('user_who_login');
+							// console.log(u_id);
+							// if(u_id == 'null' || u_id == undefined) {
+							// 	$("#Index").append("<div id='alarmfive'>收藏请先登录</div>");
+							// 	setTimeout(function(){
+							// 		$("#alarmfive").remove();
+							// 	},1200);
+							// }
+							window.location.href="film_info.html";
 						});
 					});
 

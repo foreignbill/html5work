@@ -17,6 +17,7 @@
 				type:"POST",
 	       		dataType:"JSON",
 	       		success: function(data) {
+	       			console.log(data);
 	       			for(var i=0;i<data.length;i++)
 		       			$("#filmline").append(
 							"<li class='showFilm' data-film='"+data[i].f_title+"'>"
@@ -84,7 +85,7 @@
 										+"<div class='cinema-list-item-location'>"+data[i].f_time+"</div>"
 										+"<div class='flex'></div>"
 										+"<div class='button-block'>"
-		                        			+"<div class='btn' f-title='"+data[i].f_title+"' f-time='"+data[i].f_time+"' f-date='"+daynow+"'><span class='span-fix'>购票</span></div>"
+		                        			+"<div class='btn' f-title='"+data[i].f_title+"' f-time='"+data[i].f_time+"' f-date='"+daynow+"' f-price='"+data[i].price+"'><span class='span-fix'>购票</span></div>"
 	      								+"</div>"
 									+"</div>"
 								+"</div>"
@@ -99,6 +100,7 @@
 			        			str += "#" + $.cookie('now_cinema');
 			        			str += "#" + $(this).attr('f-time');
 			        			str += "#" + $(this).attr('f-date');
+			        			str += "#" + $(this).attr('f-price');
 			        			$.cookie('order-info',str,{expires: 7});
 			        			window.location.href="order.html";
 			        		});

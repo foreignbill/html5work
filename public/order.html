@@ -18,7 +18,7 @@
 			var c_name = strArray[2];
 			var f_time = strArray[3];
 			var f_date = strArray[4];
-			console.log($(".order-title"));
+			var f_price = strArray[5];
 			$(".order-title").text(film_name);
 			$(".order-info").children("span").text(f_date+" "+f_time);
 			strArray[0] = $.cookie('user_who_login');
@@ -67,7 +67,7 @@
 						$(this).attr('class',"seat seat-chosen");
 						$(".price-block").append("<div class='selected-seat-item' seat-id='"+$(this).children("span:eq(0)").attr('seat-id')+"'>"
 									            	+"<p class='selected-seat-info'>"+$(this).children("span:eq(0)").children("div:eq(0)").text()+$(this).children("span:eq(0)").children("div:eq(1)").text()+"</p>"
-									            	+"<p class='price-info'>¥35</p>"
+									            	+"<p class='price-info'>¥"+f_price+"</p>"
 									            	+"<span class='close'>x</span>"
 									            +"</div>");
 						$(".close").each(function() {
@@ -112,7 +112,7 @@
 						else str += '-' + $(".price-block").children("div:eq('"+(i+1)+"')").attr('seat-id');
 					var user_id = $.cookie('user_who_login');
 					$.ajax({
-						url:"http://127.0.0.1:8081/create_order?user_id="+user_id+"&film_name="+film_name+"&c_name="+c_name+"&f_date="+f_date+"&f_time="+f_time+"&seat_info="+str,
+						url:"http://127.0.0.1:8081/create_order?user_id="+user_id+"&film_name="+film_name+"&c_name="+c_name+"&f_date="+f_date+"&f_time="+f_time+"&order_price="+(f_price*$(".close").length)+"&seat_info="+str,
 						type:"POST",
 			       		dataType:"JSON",
 			       		success: function(data) {

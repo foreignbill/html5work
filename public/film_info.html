@@ -21,6 +21,7 @@
 	       			$("#film-detail").append(
 	       				"<div class='film-detail-Poster' style='float: left;''>"
 							+"<img src="+data[0].file_poster+">"
+							+"<div class='movie-start-btn'>预告</div>"
 						+"</div>"
 						+"<div class='film-detail-Info'>"
 							+"<h3>"+data[0].f_title+"<img class='span-after-title' src='img/2dimax.png'></h3>"
@@ -29,8 +30,15 @@
 							+"<span class='film-detail-SimpleText'>"+findactor(data[0].f_title)+"</span>"
 							+"<span class='film-detail-SimpleText'>中国大陆-118分钟</span>"
 						+"</div>"
+						+"<div class='button-block'>"
+                    		+"<div class='btn' style='background-color: #3c9fe6;'><span class='span-fix'>想看</span></div>"
+						+"</div>"
 	       			);
 	       			$("#film_brief").text(data[0].f_brief);
+
+	       			$(".film-detail-Poster").click(function(){
+	       				window.location.href="movie.html";
+	       			});
 	       		},
 	       		error:function(error) {
 	       			console.log("Fuck you");
@@ -104,12 +112,115 @@
 			});
 
 			$("#point-board").children().each(function(){
-				$(this).hover(function(){
-					console.log(this);
+				$(this).click(function(){
+					var id = $(this).attr('bid');
+					$(this).parent().attr('data-stars',id);
+					$("#point-board").children().each(function(){
+						if($(this).attr('bid') <= id) {
+							$(this).attr('src','img/star-full.png');
+						} else {
+							$(this).attr('src','img/star-empty.png');
+						}
+					});
 				})
 			})
+			var u_id = $.cookie('user_who_login');
+			$.ajax({
+				url:"http://127.0.0.1:8081/searchactors_want_to_see?film_name="+f_title+"&user_id="+u_id,
+				type:"POST",
+				dataType:"JSON",
+				success: function(data) {
+					console.log($(".btn"));
+					if(data.length != 0) {
+						$(".btn").css('background-color','#f03d37');
+						$(".btn").children("span:eq(0)").text('已收藏');
+					}
+					$(".btn").click(function(){
+						if($(this).css('background-color') == 'rgb(60, 159, 230)' && (u_id != 'null' && u_id != undefined)) {
+							$.ajax({
+								url:"http://127.0.0.1:8081/update_want_to_see?film_name="+f_title+"&user_id="+u_id,
+								type:"POST",
+								dataType:"JSON",
+								success: function(data) {
+									console.log(data);
+									$(".btn").css('background-color','#f03d37');
+									$(".btn").children("span:eq(0)").text('已收藏');
+								},
+								error: function(error) {
+									console.log("fuck you");
+								}
+							});
+						} else {
+							$.ajax({
+								url:"http://127.0.0.1:8081/delete_want_to_see?film_name="+f_title+"&user_id="+u_id,
+								type:"POST",
+								dataType:"JSON",
+								success: function(data) {
+									console.log(data);
+									$(".btn").css('background-color','#3c9fe6');
+									$(".btn").children("span:eq(0)").text('想看');
+								},
+								error: function(error) {
+									console.log("fuck you");
+								}
+							});
+						}
+					});
+				},
+				error: function(error) {
+					console.log("fuck you");
+				}
+			});
 
+
+			$.ajax({
+				url:"http://127.0.0.1:8081/search_comment?f_title="+f_title,
+				type:"POST",
+				dataType:"JSON",
+				success: function(data) {
+					for(var i=0;i<data.length;i++) {
+						$(".comment-list").append(
+
+"<li class='comment-list-item'>"
++"<div>"
++"<header class='comment-header'>"
++"<div class='rating'>"
++"<img class='noneBg' bid='1' src='img/star-full.png'>"
++"<img class='noneBg' bid='2' src='img/star-full.png'>"
++"<img class='noneBg' bid='3' src='img/star-full.png'>"
++"<img class='noneBg' bid='4' src='img/star-full.png'>"
++"<img class='noneBg' bid='5' src='img/star-full.png'>"
++"</div>"
++"<time class='timeago'>"+data[i].c_date.split('T')[0]+"</time>"
++"</header>"
++"<section class='comment-body'>"
++"<p class='content'>"+data[i].user_comment+"</p>"
++"</section>"
++"<footer>"
++"<img class='avatar-img' src='img/photo/root.jpg'>"
++"<em class='com-nick'>"+data[i].user_id+"</em>"
++"</footer>"
++"</div>"
++"</li>"
+
+						);
+						console.log($(".comment-list").children("li:last").children("div:eq(0)").children("header:eq(0)").children("div:eq(0)"));
+						$(".comment-list").children("li:last").children("div:eq(0)").children("header:eq(0)").children("div:eq(0)").children().each(function(){
+							if($(this).attr('bid') <= data[i].stars) {
+								$(this).attr('src','img/star-full.png');
+							} else {
+								$(this).attr('src','img/star-empty.png');
+							}
+						});
+					}
+				},
+				error: function(error) {
+					console.log("fuck you");
+					window.location.href="film_info.html";
+				}
+			});
 		});
+
 		function upload() {
 			var u_id = $.cookie('user_who_login');
 			if(u_id == 'null' || u_id == undefined) {
@@ -119,7 +230,53 @@
 				},1200);
 				window.location.href = "login.html";
 			}
-			
+			var text = $("#input-window").val();
+			console.log(text);
+			if(text.length <= 10) {
+				$("#Index").children("div:eq(1)").append("<div id='alarmfive'>至少需要5个字符。</div>");
+				setTimeout(function(){
+					$("#alarmfive").remove();
+				},1200);
+				return;
+			}
+			var f_title = $.cookie("film_like");
+			var stars = $("#point-board").attr('data-stars');
+
+			Date.prototype.Format = function(fmt) {
+			    var o = {   
+			    "M+" : this.getMonth()+1,                 //月份   
+			    "d+" : this.getDate(),                    //日   
+			    "h+" : this.getHours(),                   //小时   
+			    "m+" : this.getMinutes(),                 //分   
+			    "s+" : this.getSeconds(),                 //秒   
+			    "q+" : Math.floor((this.getMonth()+3)/3), //季度   
+			    "S"  : this.getMilliseconds()             //毫秒   
+			    };   
+			    if(/(y+)/.test(fmt))   
+			        fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));   
+			    for(var k in o)   
+			        if(new RegExp("("+ k +")").test(fmt))   
+			    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
+			    return fmt;
+			}
+
+			var c_date=(new Date()).Format('yyyy-MM-dd');
+			var c_time=(new Date()).Format('hh:mm:ss');
+			console.log([c_date,c_time]);
+
+			$.ajax({
+				url:"http://127.0.0.1:8081/update_comment?user_id="+u_id+"&f_title="+f_title+"&stars="+stars+"&c_date="+c_date+"&c_time="+c_time+"&comment="+text,
+				type:"POST",
+				dataType:"JSON",
+				success: function(data) {
+					console.log(data);
+					window.location.href="film_info.html";
+				},
+				error: function(error) {
+					console.log("fuck you");
+					window.location.href="film_info.html";
+				}
+			});
 		}
 	</script>
 </head>
@@ -149,41 +306,18 @@
 					<span>短评</span>
 				</h3>
 				<ul class="comment-list">
-					<li class="comment-list-item">
-						<div>
-							<header class="comment-header">
-								<div class="rating" data-reactid=".yaor8zoc2u.4.9.1.2:$0.0.0.0">
-									<img class="noneBg" src="img/star-full.png">
-									<img class="noneBg" src="img/star-full.png">
-									<img class="noneBg" src="img/star-full.png">
-									<img class="noneBg" src="img/star-full.png">
-									<img class="noneBg" src="img/star-full.png">
-								</div>
-								<time class="timeago">07-27</time>
-							</header>
-							<section class="comment-body">
-								<p class="content">看完了，分手了</p>
-							</section>
-
-							<footer>
-								<img class="avatar-img" src="https://img.meituan.net/avatar/f62adaade0cf9f7dcb426affd53ac49f7527.jpg" data-reactid=".1rizx0nuoi8.4.9.1.2:$0.0.4.0">
-								<em class="com-nick" data-reactid=".1rizx0nuoi8.4.9.1.2:$0.0.4.1">Wxi900927964</em>
-							</footer>
-
-						</div>
-					</li>
 				</ul>
 
 				<div>
 					<h3>点评</h3>
-					<div id="point-board" class="rating" data-reactid=".yaor8zoc2u.4.9.1.2:$0.0.0.0">
+					<div id="point-board" class="rating" data-stars="5">
 						<img class="noneBg" bid="1" src="img/star-full.png">
 						<img class="noneBg" bid="2" src="img/star-full.png">
 						<img class="noneBg" bid="3" src="img/star-full.png">
 						<img class="noneBg" bid="4" src="img/star-full.png">
 						<img class="noneBg" bid="5" src="img/star-full.png">
 					</div>
-					<input type="text" name="" placeholder='点评。。。'>
+					<input id="input-window" type="text" name="" placeholder='点评。。。'>
 					<input type="submit" name="" value="提交" onclick="upload();">
 				</div>
 			</section>
